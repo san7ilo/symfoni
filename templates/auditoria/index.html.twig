@@ -12,6 +12,7 @@
                 <table class="table table-hover">
                     <thead class="table-light">
                         <tr>
+                            <th>ID Registro</th>
                             <th>Fecha y Hora</th>
                             <th>Usuario</th>
                             <th>Entidad</th>
@@ -21,6 +22,7 @@
                     <tbody>
                     {% for auditoria in auditorias %}
                         <tr>
+                            <td>{{ auditoria.entityId }}</td>
                             <td>{{ auditoria.dateTime|date('d/m/Y H:i:s') }}</td>
                             <td>
                                 <i class="fas fa-user me-1"></i>
@@ -53,7 +55,7 @@
                         </tr>
                     {% else %}
                         <tr>
-                            <td colspan="4" class="text-center text-muted">No se encontraron registros de auditoría</td>
+                            <td colspan="5" class="text-center text-muted">No se encontraron registros de auditoría</td>
                         </tr>
                     {% endfor %}
                     </tbody>

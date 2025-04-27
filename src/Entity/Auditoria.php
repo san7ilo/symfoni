@@ -24,6 +24,20 @@ class Auditoria
     #[ORM\Column(name: 'datetime', type: 'datetime')]
     private $dateTime;
 
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private $entityId;
+
+    public function getEntityId(): ?int
+    {
+        return $this->entityId;
+    }
+
+    public function setEntityId(?int $entityId): self
+    {
+        $this->entityId = $entityId;
+        return $this;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

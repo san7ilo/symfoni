@@ -3,108 +3,85 @@
 namespace App\EventSubscriber;
 
 use App\Entity\Auditoria;
+use Doctrine\Common\EventSubscriber;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\PostFlushEventArgs;
-use Doctrine\ORM\Events;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-class AuditoriaSubscriber implements EventSubscriberInterface
+class AuditoriaSubscriber implements EventSubscriber
 {
     private TokenStorageInterface $tokenStorage;
-    private array $pendingAudits = [];
-    private bool $flushing = false;
     private LoggerInterface $logger;
+    private $em;
+    public function setEntityManager(EntityManagerInterface $em) { $this->em = $em; }
 
     public function __construct(TokenStorageInterface $tokenStorage, LoggerInterface $logger)
     {
         $this->tokenStorage = $tokenStorage;
         $this->logger = $logger;
+        $this->logger->info('[AUDITORIA] AuditoriaSubscriber instanciado');
     }
 
-    public static function getSubscribedEvents(): array
+    public function getSubscribedEvents()
     {
         return [
-            Events::prePersist => 'prePersist',
-            Events::preUpdate => 'preUpdate',
-            Events::preRemove => 'preRemove',
-            Events::postFlush => 'postFlush',
+            'postPersist',
+            'preUpdate',
+            'preRemove'
         ];
     }
 
-    public function prePersist(LifecycleEventArgs $args): void
+    public function postPersist(LifecycleEventArgs $args): void
     {
-        $this->logger->info('[AUDITORIA] prePersist llamado', ['entity' => get_class($args->getObject())]);
-        $this->queueAudit('CREATE', $args);
+        $entity = $args->getObject();
+        if (($entity instanceof \App\Entity\Empleado || $entity instanceof \App\Entity\Proyecto) && $args->getObjectManager() instanceof EntityManagerInterface) {
+            $this->setEntityManager($args->getObjectManager());
+            $this->registerAudit('CREATE', $entity);
+            $this->em->flush(); // Para asegurar que se guarde la auditoría con el ID correcto
+        }
     }
 
     public function preUpdate(LifecycleEventArgs $args): void
     {
-        $this->logger->info('[AUDITORIA] preUpdate llamado', ['entity' => get_class($args->getObject())]);
-        $this->queueAudit('UPDATE', $args);
+        $entity = $args->getObject();
+        if (($entity instanceof \App\Entity\Empleado || $entity instanceof \App\Entity\Proyecto) && $args->getObjectManager() instanceof EntityManagerInterface) {
+            $this->setEntityManager($args->getObjectManager());
+            $this->registerAudit('UPDATE', $entity);
+        }
     }
 
     public function preRemove(LifecycleEventArgs $args): void
     {
-        $this->logger->info('[AUDITORIA] preRemove llamado', ['entity' => get_class($args->getObject())]);
-        $this->queueAudit('DELETE', $args);
+        $entity = $args->getObject();
+        if (($entity instanceof \App\Entity\Empleado || $entity instanceof \App\Entity\Proyecto) && $args->getObjectManager() instanceof EntityManagerInterface) {
+            $this->setEntityManager($args->getObjectManager());
+            $this->registerAudit('DELETE', $entity);
+        }
     }
 
-    private function queueAudit(string $actionType, LifecycleEventArgs $args): void
+    private function registerAudit(string $actionType, object $entity): void
     {
-        $entity = $args->getObject();
-        if (!$this->shouldAudit($entity)) {
-            $this->logger->info('[AUDITORIA] Entidad ignorada', ['entity' => get_class($entity)]);
-            return;
-        }
         $user = $this->tokenStorage->getToken()?->getUser();
-        $username = is_object($user) && method_exists($user, 'getUserIdentifier') 
-            ? $user->getUserIdentifier() 
+        $username = is_object($user) && method_exists($user, 'getUserIdentifier')
+            ? $user->getUserIdentifier()
             : 'anon.';
-        $audit = new Auditoria();
+        $audit = new \App\Entity\Auditoria();
         $audit->setUser($username);
         $audit->setEntity((new \ReflectionClass($entity))->getShortName());
         $audit->setActionType($actionType);
         $audit->setDateTime(new \DateTime());
-        $this->logger->info('[AUDITORIA] Audit en cola', [
-            'user' => $username,
-            'entity' => (new \ReflectionClass($entity))->getShortName(),
-            'action' => $actionType
-        ]);
-        $this->pendingAudits[] = $audit;
-    }
-
-    private function shouldAudit(object $entity): bool
-    {
-        return in_array(get_class($entity), [
-            'App\\Entity\\Empleado',
-            'App\\Entity\\Proyecto',
-        ], true);
+        // Guardar el ID del registro afectado
+        if (method_exists($entity, 'getId')) {
+            $audit->setEntityId($entity->getId());
+        }
+        $em = $this->em;
+        $em->persist($audit);
     }
 
     public function postFlush(PostFlushEventArgs $args): void
     {
-        $this->logger->info('[AUDITORIA] postFlush llamado', ['pendingAudits' => count($this->pendingAudits)]);
-        if (empty($this->pendingAudits) || $this->flushing) {
-            $this->logger->info('[AUDITORIA] No hay auditorías pendientes o ya está flusheando.');
-            return;
-        }
-        try {
-            $this->flushing = true;
-            $em = $args->getObjectManager();
-            foreach ($this->pendingAudits as $audit) {
-                $this->logger->info('[AUDITORIA] Persistiendo auditoría', [
-                    'user' => $audit->getUser(),
-                    'entity' => $audit->getEntity(),
-                    'action' => $audit->getActionType()
-                ]);
-                $em->persist($audit);
-            }
-            $this->pendingAudits = [];
-            $em->flush();
-        } finally {
-            $this->flushing = false;
-        }
+        // No es necesario flush adicional, Doctrine lo maneja
     }
 }

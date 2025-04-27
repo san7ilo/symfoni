@@ -7,8 +7,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 #[ORM\Entity(repositoryClass: ProyectoRepository::class)]
+#[Gedmo\Loggable]
 class Proyecto
 {
     #[ORM\Id]
@@ -16,12 +18,15 @@ class Proyecto
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Gedmo\Versioned]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
+    #[Gedmo\Versioned]
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $initdate = null;
 
+    #[Gedmo\Versioned]
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $finishdate = null;
 
@@ -31,6 +36,7 @@ class Proyecto
     #[ORM\ManyToMany(targetEntity: Empleado::class)]
     private Collection $asingemployed;
 
+    #[Gedmo\Versioned]
     #[ORM\Column(length: 255)]
     private ?string $no = null;
 

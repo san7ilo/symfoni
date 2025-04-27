@@ -5,8 +5,10 @@ namespace App\Entity;
 use App\Repository\EmpleadoRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 #[ORM\Entity(repositoryClass: EmpleadoRepository::class)]
+#[Gedmo\Loggable]
 class Empleado
 {
     #[ORM\Id]
@@ -14,27 +16,35 @@ class Empleado
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Gedmo\Versioned]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
+    #[Gedmo\Versioned]
     #[ORM\Column(length: 255)]
     private ?string $lastname = null;
 
+    #[Gedmo\Versioned]
     #[ORM\Column(length: 255)]
     private ?string $email = null;
 
+    #[Gedmo\Versioned]
     #[ORM\Column(length: 255)]
     private ?string $phone = null;
 
+    #[Gedmo\Versioned]
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $birthdate = null;
 
+    #[Gedmo\Versioned]
     #[ORM\Column]
     private ?float $salary = null;
 
+    #[Gedmo\Versioned]
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $contractdate = null;
 
+    #[Gedmo\Versioned]
     #[ORM\Column]
     private ?bool $status = null;
 
