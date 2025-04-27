@@ -1,0 +1,40 @@
+{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    {{ form_row(form.name) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.lastname) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.email) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.phone) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.birthdate) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.contractdate) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.salary) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.status) }}
+                </div>
+            </div>
+        </div>
+        <div class="card-footer bg-light d-flex justify-content-end gap-2">
+            <a href="{{ path('app_empleado_index') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-1"></i> Volver
+            </a>
+            <button class="btn btn-primary">
+                <i class="fas fa-save me-1"></i> {{ button_label|default('Guardar') }}
+            </button>
+        </div>
+    </div>
+{{ form_end(form) }}

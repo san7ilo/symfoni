@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Iniciar Sesión{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h1 class="mb-4 text-center">Iniciar Sesión</h1>
+                    <form method="post">
+                        {% if error %}
+                            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                        {% endif %}
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Email:</label>
+                            <input type="text" value="{{ last_username }}" name="_username" id="username" class="form-control" required autofocus>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Contraseña:</label>
+                            <input type="password" name="_password" id="password" class="form-control" required>
+                        </div>
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                        <div class="d-grid">
+                            <button class="btn btn-primary btn-lg" type="submit">
+                                Iniciar sesión
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

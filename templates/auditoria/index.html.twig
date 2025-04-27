@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Registro de Auditorías{% endblock %}
+
+{% block body %}
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h1 class="h3 mb-0">Registro de Auditorías</h1>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Fecha y Hora</th>
+                            <th>Usuario</th>
+                            <th>Entidad</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for auditoria in auditorias %}
+                        <tr>
+                            <td>{{ auditoria.dateTime|date('d/m/Y H:i:s') }}</td>
+                            <td>
+                                <i class="fas fa-user me-1"></i>
+                                {{ auditoria.user }}
+                            </td>
+                            <td>
+                                <span class="badge bg-info">
+                                    {% if auditoria.entity == 'Empleado' %}
+                                        <i class="fas fa-user-tie me-1"></i>
+                                    {% else %}
+                                        <i class="fas fa-project-diagram me-1"></i>
+                                    {% endif %}
+                                    {{ auditoria.entity }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge {% if auditoria.actionType == 'CREATE' %}bg-success
+                                    {% elseif auditoria.actionType == 'UPDATE' %}bg-warning
+                                    {% else %}bg-danger{% endif %}">
+                                    {% if auditoria.actionType == 'CREATE' %}
+                                        <i class="fas fa-plus me-1"></i>
+                                    {% elseif auditoria.actionType == 'UPDATE' %}
+                                        <i class="fas fa-edit me-1"></i>
+                                    {% else %}
+                                        <i class="fas fa-trash me-1"></i>
+                                    {% endif %}
+                                    {{ auditoria.actionType }}
+                                </span>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="4" class="text-center text-muted">No se encontraron registros de auditoría</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Editar Empleado{% endblock %}
+
+{% block body %}
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h1 class="h3 mb-0">Editar Empleado</h1>
+        </div>
+        {{ include('empleado/_form.html.twig', {'button_label': 'Actualizar'}) }}
+    </div>
+{% endblock %}

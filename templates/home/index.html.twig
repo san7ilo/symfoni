@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inicio - Gestión Empresarial{% endblock %}
+
+{% block body %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card bg-primary text-white shadow-sm">
+                <div class="card-body">
+                    <h1 class="display-4">¡Bienvenido al Sistema de Gestión Empresarial!</h1>
+                    <p class="lead">Gestiona empleados, proyectos y monitorea la actividad del sistema.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                    <h3>Empleados</h3>
+                    <p>Gestiona la información de tus empleados, incluyendo datos personales y laborales.</p>
+                    <a href="{{ path('app_empleado_index') }}" class="btn btn-primary">
+                        <i class="fas fa-arrow-right me-1"></i> Ir a Empleados
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <i class="fas fa-project-diagram fa-3x text-primary mb-3"></i>
+                    <h3>Proyectos</h3>
+                    <p>Administra los proyectos de la empresa y asigna empleados a los mismos.</p>
+                    <a href="{{ path('app_proyecto_index') }}" class="btn btn-primary">
+                        <i class="fas fa-arrow-right me-1"></i> Ir a Proyectos
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <i class="fas fa-history fa-3x text-primary mb-3"></i>
+                    <h3>Auditoría</h3>
+                    <p>Revisa el historial de cambios y actividades en el sistema.</p>
+                    <a href="{{ path('app_auditoria_index') }}" class="btn btn-primary">
+                        <i class="fas fa-arrow-right me-1"></i> Ver Auditoría
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
