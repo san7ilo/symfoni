@@ -1,16 +1,41 @@
-{{ form_start(form) }}
-    <div class="row g-3">
-        {% for field in form %}
-            <div class="col-md-6">
-                <div class="mb-3">
-                    {{ form_label(field, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
-                    {{ form_widget(field, {'attr': {'class': 'form-control form-control-lg'}}) }}
-                    {{ form_errors(field) }}
+{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    {{ form_label(form.name, 'Nombre del Proyecto', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.name, {'attr': {'class': 'form-control form-control-lg', 'placeholder': 'Ingrese el nombre del proyecto'}}) }}
+                    {{ form_errors(form.name) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_label(form.initdate, 'Fecha de Inicio', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.initdate, {'attr': {'class': 'form-control form-control-lg', 'placeholder': 'AAAA-MM-DD'}}) }}
+                    {{ form_errors(form.initdate) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_label(form.finishdate, 'Fecha de Fin', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.finishdate, {'attr': {'class': 'form-control form-control-lg', 'placeholder': 'AAAA-MM-DD'}}) }}
+                    {{ form_errors(form.finishdate) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_label(form.no, 'Código del Proyecto', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.no, {'attr': {'class': 'form-control form-control-lg', 'placeholder': 'Ingrese el código del proyecto'}}) }}
+                    {{ form_errors(form.no) }}
+                </div>
+                <div class="col-md-12">
+                    {{ form_label(form.asingemployed, 'Empleados Asignados', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.asingemployed, {'attr': {'class': 'form-select', 'multiple': 'multiple'}}) }}
+                    {{ form_errors(form.asingemployed) }}
                 </div>
             </div>
-        {% endfor %}
-    </div>
-    <div class="mt-4">
-        <button class="btn btn-primary btn-lg w-100">{{ button_label|default('Guardar') }}</button>
+        </div>
+        <div class="card-footer bg-light d-flex justify-content-end gap-2">
+            <a href="{{ path('app_proyecto_index') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-1"></i> Volver
+            </a>
+            <button class="btn btn-primary">
+                <i class="fas fa-save me-1"></i> {{ button_label|default('Guardar') }}
+            </button>
+        </div>
     </div>
 {{ form_end(form) }}

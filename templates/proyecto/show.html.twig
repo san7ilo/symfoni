@@ -1,38 +1,68 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Proyecto{% endblock %}
+{% block title %}Detalle del Proyecto{% endblock %}
 
 {% block body %}
 <div class="container py-4">
-    <h1 class="mb-4">Detalle de Proyecto</h1>
-    <table class="table table-bordered">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ proyecto.id }}</td>
-            </tr>
-            <tr>
-                <th>Name</th>
-                <td>{{ proyecto.name }}</td>
-            </tr>
-            <tr>
-                <th>Initdate</th>
-                <td>{{ proyecto.initdate ? proyecto.initdate|date('Y-m-d') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Finishdate</th>
-                <td>{{ proyecto.finishdate ? proyecto.finishdate|date('Y-m-d') : '' }}</td>
-            </tr>
-            <tr>
-                <th>No</th>
-                <td>{{ proyecto.no }}</td>
-            </tr>
-        </tbody>
-    </table>
-    <div class="mb-3">
-        <a href="{{ path('app_proyecto_index') }}" class="btn btn-secondary">Volver a la lista</a>
-        <a href="{{ path('app_proyecto_edit', {'id': proyecto.id}) }}" class="btn btn-warning">Editar</a>
+    <div class="card shadow mb-4">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h1 class="h4 mb-0"><i class="fas fa-project-diagram me-2"></i> Detalle del Proyecto</h1>
+            <div class="btn-group">
+                <a href="{{ path('app_proyecto_edit', {'id': proyecto.id}) }}" class="btn btn-warning">
+                    <i class="fas fa-edit me-1"></i> Editar
+                </a>
+                <a href="{{ path('app_proyecto_index') }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-1"></i> Volver a la lista
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <span class="fw-bold">ID:</span>
+                        <span class="badge bg-info">{{ proyecto.id }}</span>
+                    </div>
+                    <div class="mb-3">
+                        <span class="fw-bold">Nombre:</span>
+                        <span>{{ proyecto.name }}</span>
+                    </div>
+                    <div class="mb-3">
+                        <span class="fw-bold">Código:</span>
+                        <span class="badge bg-secondary">{{ proyecto.no }}</span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <span class="fw-bold">Fecha de Inicio:</span>
+                        <span>{{ proyecto.initdate ? proyecto.initdate|date('d/m/Y') : '-' }}</span>
+                    </div>
+                    <div class="mb-3">
+                        <span class="fw-bold">Fecha de Fin:</span>
+                        <span>{{ proyecto.finishdate ? proyecto.finishdate|date('d/m/Y') : '-' }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-4">
+                <h5 class="fw-bold">Empleados Asignados</h5>
+                {% if proyecto.asingemployed|length > 0 %}
+                    <ul class="list-group list-group-flush">
+                        {% for empleado in proyecto.asingemployed %}
+                            <li class="list-group-item">
+                                <i class="fas fa-user-tie me-1"></i>
+                                {{ empleado.name }} {{ empleado.lastname }}
+                                <span class="badge bg-light text-dark ms-2">{{ empleado.email }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <div class="alert alert-info mt-2">No hay empleados asignados a este proyecto.</div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="card-footer bg-light">
+            {{ include('proyecto/_delete_form.html.twig') }}
+        </div>
     </div>
-    {{ include('proyecto/_delete_form.html.twig') }}
 </div>
 {% endblock %}
